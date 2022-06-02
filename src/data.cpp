@@ -122,10 +122,11 @@ void free(int m, int** b, int ***t, int ***c)
 
     for(int i = 0; i < m; i++)
     {
-        if((*t) == NULL || (*c) == NULL) break;
         free((*t)[i]);
         free((*c)[i]);
     }
+    free(*t);
+    free(*c);
 
     *b = NULL;
     *t = NULL;
