@@ -2,7 +2,7 @@
 
 void read_data(int argc, char** argv, int* n, int* m, int* p, int** b, int ***t, int ***c)
 {
-    if (argc != 2)
+    if (argc != 3)
     {
         printf("Incorrect number of params\n");
         exit(1);
@@ -113,6 +113,7 @@ void print_data(int n, int m, int p, int* b, int **t, int **c)
         }
         puts("");
     }
+    puts("");
     return;
 }
 
