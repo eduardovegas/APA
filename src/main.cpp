@@ -12,6 +12,8 @@ int* b;
 int** t;
 int** c;
 
+int* cur_capacities;
+
 void print_solution(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
     for(int i = 0; i < m+1; i++)
@@ -42,12 +44,6 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
         candidate_list[j] = j;
     }
 
-    std::vector<int> capacity_left(m);
-    for(int i = 0; i < m; i++)
-    {
-        capacity_left[i] = b[i];
-    }
-
     while(!candidate_list.empty())
     {
         int c_list_size = candidate_list.size();
@@ -55,7 +51,7 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
         //unique_edge_ids = cantor_pair(job,server)
         std::vector<int> allocation_costs;
         std::vector<int> unique_edge_ids;
-        //----------------------------------------
+        //-----------------------------------------
 
         //all possible combination
         for(int k = 0; k < c_list_size; k++)
@@ -70,7 +66,7 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
             //job alocated in each possible server
             for(int i = 1; i < m+1; i++)
             {
-                if(capacity_left[i-1] > t[i-1][job])
+                if(cur_capacities[i-1] > t[i-1][job])
                 {
                     allocation_costs.push_back(c[i-1][job]);
                     unique_edge_ids.push_back(pair(candidate_idx, i));
@@ -105,7 +101,7 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
         current_cost += cost;
         if(server != 0)
         {
-            capacity_left[server-1] -= t[server-1][job];
+            cur_capacities[server-1] -= t[server-1][job];
         }
         candidate_list.erase(candidate_list.begin()+candidate_idx);
     }
@@ -115,7 +111,7 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
 
 int main(int argc, char** argv)
 {
-    read_data(argc, argv, &n, &m, &p, &b, &t, &c);
+    read_data(argc, argv, &n, &m, &p, &b, &t, &c, &cur_capacities);
     print_data(n, m, p, b, t, c);
 
     float alpha = strtof(argv[2], NULL);

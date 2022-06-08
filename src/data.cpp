@@ -1,6 +1,6 @@
 #include "data.h"
 
-void read_data(int argc, char** argv, int* n, int* m, int* p, int** b, int ***t, int ***c)
+void read_data(int argc, char** argv, int* n, int* m, int* p, int** b, int ***t, int ***c, int** cur_capacities)
 {
     if (argc != 3)
     {
@@ -37,13 +37,15 @@ void read_data(int argc, char** argv, int* n, int* m, int* p, int** b, int ***t,
     }
 
     *b = (int*) malloc((*m) * sizeof(int));
+    *cur_capacities = (int*) malloc((*m) * sizeof(int));
     for(int i = 0; i < *m; i++)
     {
         if(fscanf(f, "%d", (*b)+i) != 1)
         {
             printf("Couldn't read 'b'\n");
             exit(1);
-        }   
+        }
+        cur_capacities[i] = b[i];
     }
 
     *t = (int**) malloc((*m) * sizeof(int*));
