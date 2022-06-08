@@ -54,22 +54,17 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
         //-----------------------------------------
 
         //all possible combination
-        for(int k = 0; k < c_list_size; k++)
+        for(int c_idx = 0; c_idx < c_list_size; c_idx++)
         {
-            int candidate_idx = k;
-            int job = candidate_list[candidate_idx];
+            int job = candidate_list[c_idx];
 
-            //job not alocated
-            allocation_costs.push_back(p);
-            unique_edge_ids.push_back(pair(candidate_idx, 0));
-
-            //job alocated in each possible server
+            //job allocated in each possible server
             for(int i = 1; i < m+1; i++)
             {
                 if(cur_capacities[i-1] > t[i-1][job])
                 {
                     allocation_costs.push_back(c[i-1][job]);
-                    unique_edge_ids.push_back(pair(candidate_idx, i));
+                    unique_edge_ids.push_back(pair(c_idx, i));
                 }
             }
         }
@@ -83,6 +78,14 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
 
         unzip(allocation_costs, unique_edge_ids, zipped);
 
+        //jobs not allocated (cost always worst)
+        for(int c_idx = 0; c_idx < c_list_size; c_idx++)
+        {
+            allocation_costs.push_back(p);
+            unique_edge_ids.push_back(pair(c_idx, 0));
+        }
+        //--------------------------------------
+
         int choosen = 0;
         int range = floor(alpha*allocation_costs.size());
         if(range != 0)
@@ -93,9 +96,9 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
 
         int cost = allocation_costs[choosen];
         std::pair<int,int> inv_cantor = unpair(unique_edge_ids[choosen]);
-        int candidate_idx = inv_cantor.first;
+        int c_idx = inv_cantor.first;
         int server = inv_cantor.second;
-        int job = candidate_list[candidate_idx];
+        int job = candidate_list[c_idx];
 
         current_sol[server].push_back(job);
         current_cost += cost;
@@ -103,7 +106,7 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
         {
             cur_capacities[server-1] -= t[server-1][job];
         }
-        candidate_list.erase(candidate_list.begin()+candidate_idx);
+        candidate_list.erase(candidate_list.begin()+c_idx);
     }
 
     return;
