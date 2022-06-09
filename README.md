@@ -1,6 +1,6 @@
-#Análise e Projeto de Algoritmos
+<h1>Análise e Projeto de Algoritmos</h1>
 
-##Projeto Final
+<h2>Projeto Final</h2>
 
 Instruções:
     
@@ -13,7 +13,7 @@ Instruções:
 
 Movimentos de vizinhança:
 
-- [ ] Swap
+- [X] Swap
 - [ ] Reinsertion
 - [ ] Reinsertion-2
 
