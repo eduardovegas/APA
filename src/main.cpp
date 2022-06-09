@@ -118,13 +118,7 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost){
 
     int smaller_cost = current_cost;
     int num_servers = m + 1;
-    /*int job_pos1;
-    int job_pos2;
-    int j_1_swapped;
-    int j_2_swapped;
-    int i_1_swapped;
-    int i_2_swapped;
-    */
+   
     for (int i_1 = 1; i_1 < num_servers; i_1++){
         
         int  c_server_1 = i_1 -1;
@@ -152,15 +146,7 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost){
                             && cur_capacities[c_server_2] >= cur_capacities[c_server_2] - t[c_server_2][job_2] + t[c_server_2][job_1]){
                             
                             smaller_cost = current_cost - c[c_server_1][job_1] - c[c_server_2][job_2] + c[c_server_1][job_2] + c[c_server_2][job_1];
-                            
-                            /*
-                            j_1_swapped = current_sol[i_1][j_1];
-                            j_2_swapped = current_sol[i_2][j_2];
-                            job_pos1 = j_1;
-                            job_pos2 = j_2;
-
-                            i_1_swapped = i_1;
-                            i_2_swapped = i_2;*/    
+                              
                         }                  
                     }
                 }
@@ -184,10 +170,21 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost){
     
 //}
 
+void print_matriz_c(int **c){
+    std::cout << "Eh aqui";
+    for(int i = 0; i < m; i++){
+        std::cout << std::endl;
+        for(int j = 0; j < n; j++){
+            std::cout << c[i][j] << " ";
+        }
+
+    }
+}
+
 
 
 int main(int argc, char** argv)
-{
+{   
     read_data(argc, argv, &n, &m, &p, &b, &t, &c, &cur_capacities);
     print_data(n, m, p, b, t, c);
 
@@ -200,7 +197,8 @@ int main(int argc, char** argv)
     construction(current_sol, current_cost, alpha);
     print_solution(current_sol, current_cost);
 
-    swap(current_sol, current_cost);
+    //print_matriz_c(c);
+    //swap(current_sol, current_cost);
     print_solution(current_sol, current_cost);
 
     free(m, &b, &t, &c);
