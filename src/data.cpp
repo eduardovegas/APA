@@ -1,6 +1,6 @@
 #include "data.h"
 
-void read_data(int argc, char** argv, int* n, int* m, int* p, int** b, int ***t, int ***c, int** cur_capacities)
+void read_data(int argc, char** argv, int* n, int* m, int* p, int** b, int*** t, int*** c, int** cur_capacities)
 {
     if (argc != 3)
     {
@@ -45,7 +45,7 @@ void read_data(int argc, char** argv, int* n, int* m, int* p, int** b, int ***t,
             printf("Couldn't read 'b'\n");
             exit(1);
         }
-        cur_capacities[i] = b[i];
+        (*cur_capacities)[i] = (*b)[i];
     }
 
     *t = (int**) malloc((*m) * sizeof(int*));
@@ -119,7 +119,7 @@ void print_data(int n, int m, int p, int* b, int **t, int **c)
     return;
 }
 
-void free(int m, int** b, int ***t, int ***c)
+void free(int m, int** b, int*** t, int*** c)
 {
     free(*b);
 
