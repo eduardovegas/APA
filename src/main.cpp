@@ -115,8 +115,8 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
 void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
     bool improved = false;
-    int best_server_1 = -1;
-    int best_server_2 = -1;
+    int server_pos_1 = -1;
+    int server_pos_2 = -1;
     int best_job_1 = -1;
     int best_job_2 = -1;
     int best_delta = 0;
@@ -151,8 +151,8 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
                         if(delta < best_delta)
                         {
                             best_delta = delta;
-                            best_server_1 = i_1;
-                            best_server_2 = i_2;
+                            server_pos_1 = i_1;
+                            server_pos_2 = i_2;
                             //best_job_1 = job_1;
                             //best_job_2 = job_2;
                             job1_pos = j_1;
@@ -170,9 +170,9 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
         current_cost += best_delta; //Updating current cost
         
         //Swap
-        swap_aux = current_sol[best_server_2+1][job2_pos];
-        current_sol[best_server_2+1][job2_pos] = current_sol[best_server_1+1][job1_pos];
-        current_sol[best_server_1+1][job1_pos] = swap_aux;
+        swap_aux = current_sol[server_pos_2+1][job2_pos];
+        current_sol[server_pos_2+1][job2_pos] = current_sol[server_pos_1+1][job1_pos];
+        current_sol[server_pos_1+1][job1_pos] = swap_aux;
     }
 }
 
