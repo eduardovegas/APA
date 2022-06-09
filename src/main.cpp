@@ -129,27 +129,24 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost){
     */
     for (int i_1 = 1; i_1 < num_servers; i_1++){
         
+        int  c_server_1 = i_1 -1;
         int jobs_1 = current_sol[i_1].size();
         
         for(int j_1 = 0; j_1 < jobs_1; j_1++){
                 
                 int job_1 = current_sol[i_1][j_1];
-
-                
+           
             for(int i_2 = i_1 + 1; i_2 < num_servers; i_2++){
-               
-
-                int job_2 = current_sol[i_2][job_2];
-
+                
+                int c_server_2 = i_2 -1;
                 int jobs_2 = current_sol[i_2].size();
                 
                 for(int j_2 = 0; j_2 < jobs_2; j_2++){
                     
-                    int  c_server_1 = i_1 -1;
-                    int c_server_2 = i_2 -1;
-                    
+                    int job_2 = current_sol[i_2][job_2];
+                          
                     //Condition to check if the cost found is smaller than the current cost
-                    if(current_cost > (current_cost - c[i_1 - 1][job_1] - c[c_server_2][job_2] + c[c_server_1][job_2] + c[c_server_2][job_1])){
+                    if(current_cost > (current_cost - c[c_server_1][job_1] - c[c_server_2][job_2] + c[c_server_1][job_2] + c[c_server_2][job_1])){
                         
                         
                         //Condition to check if the servers have enough capacity to make the swap
