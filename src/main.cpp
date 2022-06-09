@@ -11,6 +11,8 @@ int p;
 int* b;
 int** t;
 int** c;
+std::vector<int> servers_capacity;
+
 
 void print_solution(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
@@ -42,10 +44,10 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
         candidate_list[j] = j;
     }
 
-    std::vector<int> capacity_left(m);
+
     for(int i = 0; i < m; i++)
     {
-        capacity_left[i] = b[i];
+        servers_capacity.push_back(b[i]);
     }
 
     while(!candidate_list.empty())
@@ -70,7 +72,7 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
             //job alocated in each possible server
             for(int i = 1; i < m+1; i++)
             {
-                if(capacity_left[i-1] > t[i-1][job])
+                if(servers_capacity[i-1] > t[i-1][job])
                 {
                     allocation_costs.push_back(c[i-1][job]);
                     unique_edge_ids.push_back(pair(candidate_idx, i));
@@ -105,13 +107,89 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
         current_cost += cost;
         if(server != 0)
         {
-            capacity_left[server-1] -= t[server-1][job];
+            servers_capacity[server-1] -= t[server-1][job];
         }
         candidate_list.erase(candidate_list.begin()+candidate_idx);
     }
 
     return;
 }
+
+
+void swap(std::vector<std::vector<int>>& current_sol, int& current_cost){
+
+    int smaller_cost = current_cost;
+    int num_servers = m + 1;
+    /*int job_pos1;
+    int job_pos2;
+    int j_1_swapped;
+    int j_2_swapped;
+    int i_1_swapped;
+    int i_2_swapped;
+    */
+    for (int i_1 = 1; i_1 < num_servers; i_1++){
+        
+        int jobs_1 = current_sol[i_1].size();
+        
+        for(int j_1 = 0; j_1 < jobs_1; j_1++){
+                
+                int job_1 = current_sol[i_1][j_1];
+
+                
+            for(int i_2 = i_1 + 1; i_2 < num_servers; i_2++){
+               
+
+                int job_2 = current_sol[i_2][job_2];
+
+                int jobs_2 = current_sol[i_2].size();
+                
+                for(int j_2 = 0; j_2 < jobs_2; j_2++){
+                    
+                    int  c_server_1 = i_1 -1;
+                    int c_server_2 = i_2 -1;
+                    
+                    //Condition to check if the cost found is smaller than the current cost
+                    if(current_cost > (current_cost - c[i_1 - 1][job_1] - c[c_server_2][job_2] + c[c_server_1][job_2] + c[c_server_2][job_1])){
+                        
+                        
+                        //Condition to check if the servers have enough capacity to make the swap
+                        if (servers_capacity[c_server_1] >= (servers_capacity[c_server_1] - t[c_server_1][job_1] + t[c_server_1][job_2])
+                            && servers_capacity[c_server_2] >= servers_capacity[c_server_2] - t[c_server_2][job_2] + t[c_server_2][job_1]){
+                            
+                            smaller_cost = current_cost - c[c_server_1][job_1] - c[c_server_2][job_2] + c[c_server_1][job_2] + c[c_server_2][job_1];
+                            
+                            /*
+                            j_1_swapped = current_sol[i_1][j_1];
+                            j_2_swapped = current_sol[i_2][j_2];
+                            job_pos1 = j_1;
+                            job_pos2 = j_2;
+
+                            i_1_swapped = i_1;
+                            i_2_swapped = i_2;*/    
+                        }                  
+                    }
+                }
+            }
+        }
+    }
+
+    //Fazendo efetivamente o swap
+    current_cost = smaller_cost;
+    //current_sol[i_1_swapped][job_pos1] = j_2_swapped;
+    //current_sol[i_2_swapped][job_pos2] = j_1_swapped;
+
+}
+
+
+
+//void rvnd(){
+
+
+
+    
+//}
+
+
 
 int main(int argc, char** argv)
 {
@@ -125,6 +203,9 @@ int main(int argc, char** argv)
     int current_cost = 0;
 
     construction(current_sol, current_cost, alpha);
+    print_solution(current_sol, current_cost);
+
+    swap(current_sol, current_cost);
     print_solution(current_sol, current_cost);
 
     free(m, &b, &t, &c);
