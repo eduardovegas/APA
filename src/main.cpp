@@ -120,6 +120,9 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
     int best_job_1 = -1;
     int best_job_2 = -1;
     int best_delta = 0;
+    int swap_aux = 0;
+    int job1_pos = 0;
+    int job2_pos = 0;
    
     for (int i_1 = 0; i_1 < m; i_1++)
     {
@@ -150,8 +153,10 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
                             best_delta = delta;
                             best_server_1 = i_1;
                             best_server_2 = i_2;
-                            best_job_1 = job_1;
-                            best_job_2 = job_2;
+                            //best_job_1 = job_1;
+                            //best_job_2 = job_2;
+                            job1_pos = j_1;
+                            job2_pos = j_2;
                             improved = true;
                         }
                     }
@@ -162,13 +167,12 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
 
     if(improved)
     {
-        current_cost += best_delta;
-        /*
-        swap
-        {
-            do the swap
-        }
-        */
+        current_cost += best_delta; //Updating current cost
+        
+        //Swap
+        swap_aux = current_sol[best_server_2+1][job2_pos];
+        current_sol[best_server_2+1][job2_pos] = current_sol[best_server_1+1][job1_pos];
+        current_sol[best_server_1+1][job1_pos] = swap_aux;
     }
 }
 
