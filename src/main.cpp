@@ -12,7 +12,6 @@ int* b;
 int** t;
 int** c;
 
-
 int* cur_capacities;
 
 void print_solution(std::vector<std::vector<int>>& current_sol, int& current_cost)
@@ -113,66 +112,65 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
     return;
 }
 
-
-void swap(std::vector<std::vector<int>>& current_sol, int& current_cost){
-
-    int smaller_cost = current_cost;
-    int num_servers = m + 1;
+void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
+{
+    bool improved = false;
+    int best_server_1 = -1;
+    int best_server_2 = -1;
+    int best_job_1 = -1;
+    int best_job_2 = -1;
+    int best_delta = 0;
    
-    for (int i_1 = 1; i_1 < num_servers; i_1++){
-        
-        int  c_server_1 = i_1 -1;
-        int jobs_1 = current_sol[i_1].size();
-        
-        for(int j_1 = 0; j_1 < jobs_1; j_1++){
-                
-                int job_1 = current_sol[i_1][j_1];
-           
-            for(int i_2 = i_1 + 1; i_2 < num_servers; i_2++){
-                
-                int c_server_2 = i_2 -1;
-                int jobs_2 = current_sol[i_2].size();
-                
-                for(int j_2 = 0; j_2 < jobs_2; j_2++){
-                    
-                    int job_2 = current_sol[i_2][job_2];
-                          
-                    //Condition to check if the cost found is smaller than the current cost
-                    if(current_cost > (current_cost - c[c_server_1][job_1] - c[c_server_2][job_2] + c[c_server_1][job_2] + c[c_server_2][job_1])){
-                        
-                        
-                        //Condition to check if the servers have enough capacity to make the swap
-                        if (cur_capacities[c_server_1] >= (cur_capacities[c_server_1] - t[c_server_1][job_1] + t[c_server_1][job_2])
-                            && cur_capacities[c_server_2] >= cur_capacities[c_server_2] - t[c_server_2][job_2] + t[c_server_2][job_1]){
-                            
-                            smaller_cost = current_cost - c[c_server_1][job_1] - c[c_server_2][job_2] + c[c_server_1][job_2] + c[c_server_2][job_1];
-                              
-                        }                  
+    for (int i_1 = 0; i_1 < m; i_1++)
+    {
+        int server_1_size = current_sol[i_1+1].size();
+
+        for(int j_1 = 0; j_1 < server_1_size; j_1++)
+        {
+            int job_1 = current_sol[i_1+1][j_1];
+            int cap_1_aux = cur_capacities[i_1] + t[i_1][job_1]; //job_1 leaving server_1
+
+            for(int i_2 = i_1+1; i_2 < m; i_2++)
+            {
+                int server_2_size = current_sol[i_2+1].size();
+                int delta_aux = c[i_2][job_1] - c[i_1][job_1]; //job_1 leaving server_1 and entering server_2
+                int cap_2_aux = cur_capacities[i_2] - t[i_2][job_1]; //job_1 entering server_2
+
+                for(int j_2 = 0; j_2 < server_2_size; j_2++)
+                {
+                    int job_2 = current_sol[i_2+1][j_2];
+
+                    //checks if servers have enough capacity for the movement
+                    if(cap_1_aux > t[i_1][job_2] && cap_2_aux + t[i_2][job_2] > 0)
+                    {
+                        //checks if the movement cost is better than best delta
+                        int delta = c[i_1][job_2] + delta_aux - c[i_2][job_2];
+                        if(delta < best_delta)
+                        {
+                            best_delta = delta;
+                            best_server_1 = i_1;
+                            best_server_2 = i_2;
+                            best_job_1 = job_1;
+                            best_job_2 = job_2;
+                            improved = true;
+                        }
                     }
                 }
             }
         }
     }
 
-    //Fazendo efetivamente o swap
-    current_cost = smaller_cost;
-    
-
-}
-
-
-void print_matriz_c(int **c){
-    std::cout << "Eh aqui";
-    for(int i = 0; i < m; i++){
-        std::cout << std::endl;
-        for(int j = 0; j < n; j++){
-            std::cout << c[i][j] << " ";
+    if(improved)
+    {
+        current_cost += best_delta;
+        /*
+        swap
+        {
+            do the swap
         }
-
+        */
     }
 }
-
-
 
 int main(int argc, char** argv)
 {   
@@ -188,8 +186,7 @@ int main(int argc, char** argv)
     construction(current_sol, current_cost, alpha);
     print_solution(current_sol, current_cost);
 
-    //print_matriz_c(c);
-    //swap(current_sol, current_cost);
+    swap(current_sol, current_cost);
     print_solution(current_sol, current_cost);
 
     free(m, &b, &t, &c);
