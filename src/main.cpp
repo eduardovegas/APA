@@ -11,7 +11,6 @@ int p;
 int* b;
 int** t;
 int** c;
-std::vector<int> servers_capacity;
 
 
 int* cur_capacities;
@@ -149,8 +148,8 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost){
                         
                         
                         //Condition to check if the servers have enough capacity to make the swap
-                        if (servers_capacity[c_server_1] >= (servers_capacity[c_server_1] - t[c_server_1][job_1] + t[c_server_1][job_2])
-                            && servers_capacity[c_server_2] >= servers_capacity[c_server_2] - t[c_server_2][job_2] + t[c_server_2][job_1]){
+                        if (cur_capacities[c_server_1] >= (cur_capacities[c_server_1] - t[c_server_1][job_1] + t[c_server_1][job_2])
+                            && cur_capacities[c_server_2] >= cur_capacities[c_server_2] - t[c_server_2][job_2] + t[c_server_2][job_1]){
                             
                             smaller_cost = current_cost - c[c_server_1][job_1] - c[c_server_2][job_2] + c[c_server_1][job_2] + c[c_server_2][job_1];
                             
