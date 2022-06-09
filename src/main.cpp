@@ -156,19 +156,10 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost){
 
     //Fazendo efetivamente o swap
     current_cost = smaller_cost;
-    //current_sol[i_1_swapped][job_pos1] = j_2_swapped;
-    //current_sol[i_2_swapped][job_pos2] = j_1_swapped;
+    
 
 }
 
-
-
-//void rvnd(){
-
-
-
-    
-//}
 
 void print_matriz_c(int **c){
     std::cout << "Eh aqui";
