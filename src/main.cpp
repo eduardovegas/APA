@@ -153,8 +153,6 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
                             best_delta = delta;
                             server_pos_1 = i_1;
                             server_pos_2 = i_2;
-                            //best_job_1 = job_1;
-                            //best_job_2 = job_2;
                             job1_pos = j_1;
                             job2_pos = j_2;
                             improved = true;
