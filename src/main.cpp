@@ -123,6 +123,8 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
     int swap_aux = 0;
     int job1_pos = 0;
     int job2_pos = 0;
+    int cap_1_left = 0;
+    int cap_2_left = 0;
    
     for (int i_1 = 0; i_1 < m; i_1++)
     {
@@ -155,6 +157,8 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
                             server_pos_2 = i_2;
                             job1_pos = j_1;
                             job2_pos = j_2;
+                            cap_1_left = cap_1_aux;
+                            cap_2_left = cap_2_aux;
                             improved = true;
                         }
                     }
@@ -171,6 +175,8 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
         swap_aux = current_sol[server_pos_2+1][job2_pos];
         current_sol[server_pos_2+1][job2_pos] = current_sol[server_pos_1+1][job1_pos];
         current_sol[server_pos_1+1][job1_pos] = swap_aux;
+        cur_capacities[server_pos_1] = cap_1_left;
+        cur_capacities[server_pos_2] = cap_2_left;
     }
 }
 
