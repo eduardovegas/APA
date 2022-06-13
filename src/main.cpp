@@ -19,13 +19,10 @@ void print_solution(std::vector<std::vector<int>>& current_sol, int& current_cos
     for(int i = 0; i < m+1; i++)
     {
         if(i == 0)
-        {
             printf("N.A: ");
-        }
         else
-        {
             printf("S%d: ", i);
-        }
+
         int jobs = current_sol[i].size();
         for(int j = 0; j < jobs; j++)
         {
@@ -125,7 +122,7 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
     int job2_pos = 0;
     int cap_1_left = 0;
     int cap_2_left = 0;
-   
+
     for (int i_1 = 0; i_1 < m; i_1++)
     {
         int server_1_size = current_sol[i_1+1].size();
@@ -170,9 +167,9 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
     if(improved)
     {
         std::cout << "Swap" << std::endl;
-        
+
         current_cost += best_delta; //Updating current cost
-        
+
         //Swap
         swap_aux = current_sol[server_pos_2+1][job2_pos];
         current_sol[server_pos_2+1][job2_pos] = current_sol[server_pos_1+1][job1_pos];
@@ -182,70 +179,42 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
     }
 }
 
-// void reinsertion(std::vector<std::vector<int>>& current_sol, int& current_cost)
-// {
-//     bool improved = false;
-//     int server_pos = 1;
-//     int best_job = -1;
-//     int best_delta = 0;
-//     int job_pos = 0;
-//     int cap_left = 0;
-//     int cap_aux = 0;
-//     int job_aux = 0;
-//     int delta_aux = 0;
-
-//     for(int i = 0; i < m; i++){
-//         int server_size = current_sol[i].size();
-
-//         for( int j = 0; j < server_size; j++){
-//             int job = current_sol[i][j];
-
-//             for( int k = 0; k < m; k++){
-                
-//             }
-//         }
-
-//     }
-
-// }
-
 void reinsertion(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
     bool improved = false;
-    int best_job = -1;
-    int best_server = -1;
     int server_pos_1 = -1;
     int server_pos_2 = -1;
-    int best_delta = 0;
+    int best_job = -1;
     int best_job_pos = 0;
-    int job_pos = 0;
+    int best_delta = 0;
 
-    for(int i = 0; i < m; i++)
+    for(int i_1 = 0; i_1 < m; i_1++)
     {
-        int server_size = current_sol[i+1].size();
+        int server_1_size = current_sol[i_1+1].size();
 
-        for(int j = 0; j < server_size; j++)
+        for(int j = 0; j < server_1_size; j++)
         {
-            int job = current_sol[i+1][j];
-            
-            for(int k = 0; k < m; k++)
+            int job = current_sol[i_1+1][j];
+
+            for(int i_2 = 0; i_2 < m; i_2++)
             {
-                if(k == i){
-                    continue;
-                }
-                
-                int delta = c[k][job] - c[i][job]; //job leaving server and entering server k
-                
-                if(cur_capacities[k] > t[k][job])
+                if(i_2 != i_1)
                 {
-                    if(delta < best_delta)
+                    //checks if server_2 has enough capacity for the insertion
+                    if(cur_capacities[i_2] > t[i_2][job])
                     {
-                        best_delta = delta;
-                        best_job = job;
-                        server_pos_1 = i;
-                        server_pos_2 = k;
-                        best_job_pos = j;
-                        improved = true;
+                        int delta = c[i_2][job] - c[i_1][job]; //job leaving server_1 and entering server_2
+
+                        //checks if the movement cost is better than best delta
+                        if(delta < best_delta)
+                        {
+                            best_delta = delta;
+                            server_pos_1 = i_1;
+                            server_pos_2 = i_2;
+                            best_job = job;
+                            best_job_pos = j;
+                            improved = true;
+                        }
                     }
                 }
             }
@@ -254,19 +223,12 @@ void reinsertion(std::vector<std::vector<int>>& current_sol, int& current_cost)
 
     if(improved)
     {
-        std::cout << "Reinsertion" << std::endl;
-
-        std::cout << "Best Job: " << best_job+1 << std::endl;
-
-        std::cout << "Server 1: " << server_pos_1+1 << " " << c[server_pos_1][best_job] << std::endl;
-        std::cout << "Server 2: " << server_pos_2+1 << " " << c[server_pos_2][best_job] << std::endl;
-        
         current_cost += best_delta; //Updating current cost
-        
+
         //Reinsertion
         cur_capacities[server_pos_1] += t[server_pos_1][best_job];
         cur_capacities[server_pos_2] -= t[server_pos_2][best_job];
-        current_sol[server_pos_2+1].push_back(best_job);    
+        current_sol[server_pos_2+1].push_back(best_job);
         current_sol[server_pos_1+1].erase(current_sol[server_pos_1+1].begin()+best_job_pos);
     }
 }
