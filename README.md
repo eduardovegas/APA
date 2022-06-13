@@ -3,18 +3,13 @@
 <h2>Projeto Final</h2>
 
 Instruções:
-    
+
     make rebuild
 
     ./apa instances/instance.txt
 
-
-
-
 Movimentos de vizinhança:
 
-- [X] Swap
+- [x] Swap
 - [ ] Reinsertion
 - [ ] Reinsertion-2
-
-
