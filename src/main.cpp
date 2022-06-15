@@ -174,8 +174,8 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
         swap_aux = current_sol[server_pos_2+1][job2_pos];
         current_sol[server_pos_2+1][job2_pos] = current_sol[server_pos_1+1][job1_pos];
         current_sol[server_pos_1+1][job1_pos] = swap_aux;
-        cur_capacities[server_pos_1] = cap_1_left;
-        cur_capacities[server_pos_2] = cap_2_left;
+        cur_capacities[server_pos_1] = cap_1_left - t[server_pos_1][job2_pos];
+        cur_capacities[server_pos_2] = cap_2_left + t[server_pos_2][job2_pos];
     }
 }
 
@@ -247,8 +247,8 @@ int main(int argc, char** argv)
     construction(current_sol, current_cost, alpha);
     print_solution(current_sol, current_cost);
 
-    //swap(current_sol, current_cost);
-    //print_solution(current_sol, current_cost);
+    swap(current_sol, current_cost);
+    print_solution(current_sol, current_cost);
 
     reinsertion(current_sol, current_cost);
     print_solution(current_sol, current_cost);
