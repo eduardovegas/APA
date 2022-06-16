@@ -5,6 +5,8 @@
 #include "data.h"
 #include "utils.h"
 
+#define M 99999
+
 int n;
 int m;
 int p;
@@ -28,6 +30,8 @@ void print_solution(std::vector<std::vector<int>>& current_sol, int& current_cos
         {
             printf("%d ", current_sol[i][j]+1);
         }
+        if(i != 0)
+            printf("Cap: %d", cur_capacities[i-1]);
         puts("");
     }
     printf("Cost: %d\n\n", current_cost);
@@ -179,7 +183,7 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
     }
 }
 
-void reinsertion(std::vector<std::vector<int>>& current_sol, int& current_cost)
+void reinsertion_allocated(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
     bool improved = false;
     int server_pos_1 = -1;
@@ -233,6 +237,50 @@ void reinsertion(std::vector<std::vector<int>>& current_sol, int& current_cost)
     }
 }
 
+void reinsertion_not_allocated(std::vector<std::vector<int>>& current_sol, int& current_cost)
+{
+    bool improved = false;
+    int server_pos = -1;
+    int best_job = -1;
+    int best_job_pos = 0;
+    int best_delta = M;
+
+    int not_allocated_size = current_sol[0].size();
+    for(int j = 0; j < not_allocated_size; j++)
+    {
+        int job = current_sol[0][j];
+
+        for(int i = 0; i < m; i++)
+        {
+            //checks if server_i has enough capacity for the insertion
+            if(cur_capacities[i] > t[i][job])
+            {
+                int delta = t[i][job];
+
+                //checks if the movement processing time is better than best delta
+                if(delta < best_delta)
+                {
+                    best_delta = delta;
+                    server_pos = i;
+                    best_job = job;
+                    best_job_pos = j;
+                    improved = true;
+                }
+            }
+        }
+    }
+
+    if(improved)
+    {
+        current_cost += c[server_pos][best_job] - p; //Updating current cost
+
+        //Reinsertion
+        cur_capacities[server_pos] -= best_delta;
+        current_sol[server_pos+1].push_back(best_job);
+        current_sol[0].erase(current_sol[0].begin()+best_job_pos);
+    }
+}
+
 int main(int argc, char** argv)
 {   
     read_data(argc, argv, &n, &m, &p, &b, &t, &c, &cur_capacities);
@@ -250,7 +298,10 @@ int main(int argc, char** argv)
     swap(current_sol, current_cost);
     print_solution(current_sol, current_cost);
 
-    reinsertion(current_sol, current_cost);
+    reinsertion_allocated(current_sol, current_cost);
+    print_solution(current_sol, current_cost);
+
+    reinsertion_not_allocated(current_sol, current_cost);
     print_solution(current_sol, current_cost);
 
     free(m, &b, &t, &c);
