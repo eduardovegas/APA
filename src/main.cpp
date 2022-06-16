@@ -286,51 +286,41 @@ bool reinsertion_not_allocated(std::vector<std::vector<int>>& current_sol, int& 
     return improved;
 }
 
-void rvnd(std::vector<std::vector<int>> &current_sol, int& current_cost){
-    std::vector<int> neighbourhood = {1, 2, 3}; //1 is for swap, 2 for reinsertion allocated and 3 for reinsertion not allocated
-    bool empty_list = false;
-    int movement;
-    bool improved;
-    srand(time(0));
+void rvnd(std::vector<std::vector<int>> &current_sol, int& current_cost)
+{
+    //id = 1 for swap, 2 for reinsertion-allocated and 3 for reinsertion-not-allocated
+    std::vector<int> nbh_ids = {1, 2, 3};
+    Random::shuffle(nbh_ids.begin(), nbh_ids.end()); //Randomizes neighbourhood list
 
-    while(neighbourhood.empty() == false){
-        improved = true;
-        movement = rand()%neighbourhood.size(); //Choses neighbourhood at random
-        
-        if(neighbourhood[movement] == 1){
+    int idx = 0;
+    while(idx < 3)
+    {
+        int nbh = nbh_ids[idx]; //Gets neighbourhood from shuffled list
+        int improved = false;
 
-            while(improved == true){
-        
+        switch(nbh)
+        {
+            case 1:
                 improved = swap(current_sol, current_cost);
-                
-            }
-            //Once solution is no longer improving (best neighbourhood found), value  is erased from vector
-            neighbourhood.erase(neighbourhood.begin() + movement);
-
-        }else if(neighbourhood[movement] == 2){
-                
-            while (improved == true)
-            {
+                break;
+            case 2:
                 improved = reinsertion_allocated(current_sol, current_cost);
-                
-            }
-
-            neighbourhood.erase(neighbourhood.begin() + movement);
-    
-        }else if(neighbourhood[movement] == 3){
-
-            while (improved == true)
-            {
+                break;
+            case 3:
                 improved = reinsertion_not_allocated(current_sol, current_cost);
-                
-            }
-
-            neighbourhood.erase(neighbourhood.begin() + movement);
-
+                break;
         }
 
+        if(improved)
+        {
+            idx = 0;
+            Random::shuffle(nbh_ids.begin(), nbh_ids.end()); //Randomizes neighbourhood list
+        }
+        else
+        {
+            idx += 1;
+        }
     }
-
 }
 
 int main(int argc, char** argv)
@@ -346,14 +336,14 @@ int main(int argc, char** argv)
     construction(current_sol, current_cost, alpha);
     print_solution(current_sol, current_cost);
 
-    swap(current_sol, current_cost);
-    print_solution(current_sol, current_cost);
+    // swap(current_sol, current_cost);
+    // print_solution(current_sol, current_cost);
 
-    reinsertion_allocated(current_sol, current_cost);
-    print_solution(current_sol, current_cost);
+    // reinsertion_allocated(current_sol, current_cost);
+    // print_solution(current_sol, current_cost);
 
-    reinsertion_not_allocated(current_sol, current_cost);
-    print_solution(current_sol, current_cost);
+    // reinsertion_not_allocated(current_sol, current_cost);
+    // print_solution(current_sol, current_cost);
 
     rvnd(current_sol, current_cost);
     print_solution(current_sol, current_cost);
