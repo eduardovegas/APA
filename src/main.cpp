@@ -183,6 +183,72 @@ bool swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
     return improved;
 }
 
+bool disturbance(std::vector<std::vector<int>>& current_sol, int& current_cost)
+{
+    int server_pos_1 = -1;
+    int server_pos_2 = -1;
+    int job1_pos = -1;
+    int job2_pos = -1;
+    int cap_1_left = 0;
+    int cap_2_left = 0;
+
+    for (int i_1 = 0; i_1 < m; i_1++)
+    {
+        int server_1_size = current_sol[i_1+1].size();
+
+        for(int j_1 = 0; j_1 < server_1_size; j_1++)
+        {
+            int job_1 = current_sol[i_1+1][j_1];
+            int cap_1_aux = cur_capacities[i_1] + t[i_1][job_1]; //job_1 leaving server_1
+
+            for(int i_2 = i_1+1; i_2 < m; i_2++)
+            {
+                int server_2_size = current_sol[i_2+1].size();
+                int delta_aux = c[i_2][job_1] - c[i_1][job_1]; //job_1 leaving server_1 and entering server_2
+                int cap_2_aux = cur_capacities[i_2] - t[i_2][job_1]; //job_1 entering server_2
+
+                for(int j_2 = 0; j_2 < server_2_size; j_2++)
+                {
+                    int job_2 = current_sol[i_2+1][j_2];
+
+                    //checks if servers have enough capacity for the movement
+                    if(cap_1_aux > t[i_1][job_2] && cap_2_aux + t[i_2][job_2] > 0)
+                    {
+                        //checks if the movement cost is better than best delta
+                        int delta = c[i_1][job_2] + delta_aux - c[i_2][job_2];
+                        if(delta < best_delta)
+                        {
+                            best_delta = delta;
+                            server_pos_1 = i_1;
+                            server_pos_2 = i_2;
+                            job1_pos = j_1;
+                            job2_pos = j_2;
+                            best_job_1 = job_1;
+                            best_job_2 = job_2;
+                            cap_1_left = cap_1_aux;
+                            cap_2_left = cap_2_aux;
+                            improved = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if(improved)
+    {
+        current_cost += best_delta; //Updating current cost
+
+        //Swap
+        current_sol[server_pos_2+1][job2_pos] = best_job_1;
+        current_sol[server_pos_1+1][job1_pos] = best_job_2;
+        cur_capacities[server_pos_1] = cap_1_left - t[server_pos_1][best_job_2];
+        cur_capacities[server_pos_2] = cap_2_left + t[server_pos_2][best_job_2];
+    }
+    
+    return improved;
+}
+
 bool reinsertion_allocated(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
     int server_pos_1 = -1;
