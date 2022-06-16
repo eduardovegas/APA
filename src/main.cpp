@@ -1,9 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <time.h>
 #include "data.h"
 #include "utils.h"
+#include "random.hpp"
+
+using Random = effolkronium::random_static;
 
 #define M 99999
 
@@ -91,8 +93,7 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
         int range = floor(alpha*allocation_costs.size());
         if(range != 0)
         {
-            //choosen = rand([0,range))
-            choosen = rand() % range;
+            choosen = Random::get(0, range-1);
         }
 
         int cost = allocation_costs[choosen];
@@ -179,7 +180,7 @@ bool swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
         cur_capacities[server_pos_1] = cap_1_left - t[server_pos_1][best_job_2];
         cur_capacities[server_pos_2] = cap_2_left + t[server_pos_2][best_job_2];
     }
-    
+
     return improved;
 }
 
@@ -351,60 +352,49 @@ bool reinsertion_not_allocated(std::vector<std::vector<int>>& current_sol, int& 
     return improved;
 }
 
-void rvnd(std::vector<std::vector<int>> &current_sol, int& current_cost){
-    std::vector<int> neighbourhood = {1, 2, 3}; //1 is for swap, 2 for reinsertion allocated and 3 for reinsertion not allocated
-    bool empty_list = false;
-    int movement;
-    bool improved;
-    srand(time(0));
+void rvnd(std::vector<std::vector<int>> &current_sol, int& current_cost)
+{
+    //id = 1 for swap, 2 for reinsertion-allocated and 3 for reinsertion-not-allocated
+    std::vector<int> nbh_ids = {1, 2, 3};
+    Random::shuffle(nbh_ids.begin(), nbh_ids.end()); //Randomizes neighbourhood list
 
-    while(neighbourhood.empty() == false){
-        improved = true;
-        movement = rand()%neighbourhood.size(); //Choses neighbourhood at random
-        
-        if(neighbourhood[movement] == 1){
+    int idx = 0;
+    while(idx < 3)
+    {
+        int nbh = nbh_ids[idx]; //Gets neighbourhood from shuffled list
+        int improved = false;
 
-            while(improved == true){
-        
+        switch(nbh)
+        {
+            case 1:
                 improved = swap(current_sol, current_cost);
-                
-            }
-            //Once solution is no longer improving (best neighbourhood found), value  is erased from vector
-            neighbourhood.erase(neighbourhood.begin() + movement);
-
-        }else if(neighbourhood[movement] == 2){
-                
-            while (improved == true)
-            {
+                break;
+            case 2:
                 improved = reinsertion_allocated(current_sol, current_cost);
-                
-            }
-
-            neighbourhood.erase(neighbourhood.begin() + movement);
-    
-        }else if(neighbourhood[movement] == 3){
-
-            while (improved == true)
-            {
+                break;
+            case 3:
                 improved = reinsertion_not_allocated(current_sol, current_cost);
-                
-            }
-
-            neighbourhood.erase(neighbourhood.begin() + movement);
-
+                break;
         }
 
+        if(improved)
+        {
+            idx = 0;
+            Random::shuffle(nbh_ids.begin(), nbh_ids.end()); //Randomizes neighbourhood list
+        }
+        else
+        {
+            idx += 1;
+        }
     }
-
 }
 
 int main(int argc, char** argv)
-{   
+{
     read_data(argc, argv, &n, &m, &p, &b, &t, &c, &cur_capacities);
     print_data(n, m, p, b, t, c);
 
     float alpha = strtof(argv[2], NULL);
-    srand(time(NULL));
 
     std::vector<std::vector<int>> current_sol(m+1, std::vector<int>());
     int current_cost = 0;
@@ -412,14 +402,14 @@ int main(int argc, char** argv)
     construction(current_sol, current_cost, alpha);
     print_solution(current_sol, current_cost);
 
-    swap(current_sol, current_cost);
-    print_solution(current_sol, current_cost);
+    // swap(current_sol, current_cost);
+    // print_solution(current_sol, current_cost);
 
-    reinsertion_allocated(current_sol, current_cost);
-    print_solution(current_sol, current_cost);
+    // reinsertion_allocated(current_sol, current_cost);
+    // print_solution(current_sol, current_cost);
 
-    reinsertion_not_allocated(current_sol, current_cost);
-    print_solution(current_sol, current_cost);
+    // reinsertion_not_allocated(current_sol, current_cost);
+    // print_solution(current_sol, current_cost);
 
     rvnd(current_sol, current_cost);
     print_solution(current_sol, current_cost);
