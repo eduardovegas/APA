@@ -6,10 +6,19 @@ Instruções:
 
     make rebuild
 
-    ./apa instances/instance.txt
+    ./apa instances/instance.txt alpha_param
 
 Movimentos de vizinhança:
 
 - [x] Swap
-- [ ] Reinsertion
-- [ ] Reinsertion-2
+- [X] Reinsertion
+- [X] Reinsertion-2
+
+Algoritmos de busca local:
+
+- [X] RVND
+
+Metaheurísticas:
+
+- [ ] ILS
+- [ ] GILS-RVND
