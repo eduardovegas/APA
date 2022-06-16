@@ -19,7 +19,7 @@ int** c;
 int* cur_capacities;
 int optimal;
 
-void print_solution(std::vector<std::vector<int>>& current_sol, int& current_cost)
+void print_solution(std::vector<std::vector<int>>& sol, int& cost)
 {
     for(int i = 0; i < m+1; i++)
     {
@@ -28,20 +28,27 @@ void print_solution(std::vector<std::vector<int>>& current_sol, int& current_cos
         else
             printf("S%d: ", i);
 
-        int jobs = current_sol[i].size();
+        int jobs = sol[i].size();
         for(int j = 0; j < jobs; j++)
         {
-            printf("%d ", current_sol[i][j]+1);
+            printf("%d ", sol[i][j]+1);
         }
         if(i != 0)
             printf("Cap: %d", cur_capacities[i-1]);
         puts("");
     }
-    printf("Cost: %d\n\n", current_cost);
+    printf("Cost: %d\n\n", cost);
 }
 
 void construction(std::vector<std::vector<int>>& current_sol, int& current_cost, float& alpha)
 {
+    current_sol = std::vector<std::vector<int>>(m+1, std::vector<int>());
+    current_cost = 0;
+    for(int i = 0; i < m; i++)
+    {
+        cur_capacities[i] = b[i];
+    }
+
     std::vector<int> candidate_list(n);
     for(int j = 0; j < n; j++)
     {
@@ -397,26 +404,34 @@ int main(int argc, char** argv)
 
     int optimal = atoi(argv[2]);
     float alpha = strtof(argv[3], NULL);
+    int IGrasp = atoi(argv[4]);
 
-    std::vector<std::vector<int>> current_sol(m+1, std::vector<int>());
-    int current_cost = 0;
+    int current_cost;
+    int best_cost = M;
+    std::vector<std::vector<int>> current_sol;
+    std::vector<std::vector<int>> best_sol;
 
-    construction(current_sol, current_cost, alpha);
-    print_solution(current_sol, current_cost);
+    //GRASP
+    for(int i = 0; i < IGrasp; i++)
+    {
+        construction(current_sol, current_cost, alpha);
+        print_solution(current_sol, current_cost);
 
-    // swap(current_sol, current_cost);
-    // print_solution(current_sol, current_cost);
+        rvnd(current_sol, current_cost);
+        print_solution(current_sol, current_cost);
 
-    // reinsertion_allocated(current_sol, current_cost);
-    // print_solution(current_sol, current_cost);
+        if(current_cost < best_cost)
+        {
+            best_sol = current_sol;
+            best_cost = current_cost;
+        }
+    }
+    //-----
 
-    // reinsertion_not_allocated(current_sol, current_cost);
-    // print_solution(current_sol, current_cost);
+    printf("\nBEST:\n");
+    print_solution(best_sol, best_cost);
 
-    rvnd(current_sol, current_cost);
-    print_solution(current_sol, current_cost);
-
-    free(m, &b, &t, &c);
+    free(m, &b, &t, &c, &cur_capacities);
 
     return 0;
 }
