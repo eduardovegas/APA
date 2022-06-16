@@ -115,17 +115,16 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
 
 bool swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
-    bool improved = false;
     int server_pos_1 = -1;
     int server_pos_2 = -1;
     int best_job_1 = -1;
     int best_job_2 = -1;
+    int job1_pos = -1;
+    int job2_pos = -1;
     int best_delta = 0;
-    int swap_aux = 0;
-    int job1_pos = 0;
-    int job2_pos = 0;
     int cap_1_left = 0;
     int cap_2_left = 0;
+    bool improved = false;
 
     for (int i_1 = 0; i_1 < m; i_1++)
     {
@@ -172,14 +171,11 @@ bool swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
 
     if(improved)
     {
-        std::cout << "Swap" << std::endl;
-
         current_cost += best_delta; //Updating current cost
 
         //Swap
-        swap_aux = current_sol[server_pos_2+1][job2_pos];
-        current_sol[server_pos_2+1][job2_pos] = current_sol[server_pos_1+1][job1_pos];
-        current_sol[server_pos_1+1][job1_pos] = swap_aux;
+        current_sol[server_pos_2+1][job2_pos] = best_job_1;
+        current_sol[server_pos_1+1][job1_pos] = best_job_2;
         cur_capacities[server_pos_1] = cap_1_left - t[server_pos_1][best_job_2];
         cur_capacities[server_pos_2] = cap_2_left + t[server_pos_2][best_job_2];
     }
@@ -189,12 +185,12 @@ bool swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
 
 bool reinsertion_allocated(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
-    bool improved = false;
     int server_pos_1 = -1;
     int server_pos_2 = -1;
     int best_job = -1;
-    int best_job_pos = 0;
+    int job_pos = -1;
     int best_delta = 0;
+    bool improved = false;
 
     for(int i_1 = 0; i_1 < m; i_1++)
     {
@@ -220,7 +216,7 @@ bool reinsertion_allocated(std::vector<std::vector<int>>& current_sol, int& curr
                             server_pos_1 = i_1;
                             server_pos_2 = i_2;
                             best_job = job;
-                            best_job_pos = j;
+                            job_pos = j;
                             improved = true;
                         }
                     }
@@ -237,27 +233,19 @@ bool reinsertion_allocated(std::vector<std::vector<int>>& current_sol, int& curr
         cur_capacities[server_pos_1] += t[server_pos_1][best_job];
         cur_capacities[server_pos_2] -= t[server_pos_2][best_job];
         current_sol[server_pos_2+1].push_back(best_job);
-        current_sol[server_pos_1+1].erase(current_sol[server_pos_1+1].begin()+best_job_pos);
+        current_sol[server_pos_1+1].erase(current_sol[server_pos_1+1].begin()+job_pos);
     }
 
     return improved;
 }
 
-
-
-
-
-
-
-
-
 bool reinsertion_not_allocated(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
-    bool improved = false;
     int server_pos = -1;
     int best_job = -1;
-    int best_job_pos = 0;
+    int job_pos = -1;
     int best_delta = M;
+    bool improved = false;
 
     int not_allocated_size = current_sol[0].size();
     for(int j = 0; j < not_allocated_size; j++)
@@ -277,7 +265,7 @@ bool reinsertion_not_allocated(std::vector<std::vector<int>>& current_sol, int& 
                     best_delta = delta;
                     server_pos = i;
                     best_job = job;
-                    best_job_pos = j;
+                    job_pos = j;
                     improved = true;
                 }
             }
@@ -291,16 +279,11 @@ bool reinsertion_not_allocated(std::vector<std::vector<int>>& current_sol, int& 
         //Reinsertion
         cur_capacities[server_pos] -= best_delta;
         current_sol[server_pos+1].push_back(best_job);
-        current_sol[0].erase(current_sol[0].begin()+best_job_pos);
+        current_sol[0].erase(current_sol[0].begin()+job_pos);
     }
 
-    
     return improved;
 }
-
-
-
-
 
 void rvnd(std::vector<std::vector<int>> &current_sol, int& current_cost){
     std::vector<int> neighbourhood = {1, 2, 3}; //1 is for swap, 2 for reinsertion allocated and 3 for reinsertion not allocated
@@ -349,9 +332,6 @@ void rvnd(std::vector<std::vector<int>> &current_sol, int& current_cost){
 
 }
 
-
-
-
 int main(int argc, char** argv)
 {   
     read_data(argc, argv, &n, &m, &p, &b, &t, &c, &cur_capacities);
@@ -366,14 +346,14 @@ int main(int argc, char** argv)
     construction(current_sol, current_cost, alpha);
     print_solution(current_sol, current_cost);
 
-    //swap(current_sol, current_cost);
-    //print_solution(current_sol, current_cost);
+    swap(current_sol, current_cost);
+    print_solution(current_sol, current_cost);
 
-    //reinsertion_allocated(current_sol, current_cost);
-    //print_solution(current_sol, current_cost);
+    reinsertion_allocated(current_sol, current_cost);
+    print_solution(current_sol, current_cost);
 
-    //reinsertion_not_allocated(current_sol, current_cost);
-    //print_solution(current_sol, current_cost);
+    reinsertion_not_allocated(current_sol, current_cost);
+    print_solution(current_sol, current_cost);
 
     rvnd(current_sol, current_cost);
     print_solution(current_sol, current_cost);
