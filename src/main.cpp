@@ -113,7 +113,7 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
     return;
 }
 
-void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
+bool swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
     bool improved = false;
     int server_pos_1 = -1;
@@ -158,6 +158,8 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
                             server_pos_2 = i_2;
                             job1_pos = j_1;
                             job2_pos = j_2;
+                            best_job_1 = job_1;
+                            best_job_2 = job_2;
                             cap_1_left = cap_1_aux;
                             cap_2_left = cap_2_aux;
                             improved = true;
@@ -178,12 +180,14 @@ void swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
         swap_aux = current_sol[server_pos_2+1][job2_pos];
         current_sol[server_pos_2+1][job2_pos] = current_sol[server_pos_1+1][job1_pos];
         current_sol[server_pos_1+1][job1_pos] = swap_aux;
-        cur_capacities[server_pos_1] = cap_1_left - t[server_pos_1][job2_pos];
-        cur_capacities[server_pos_2] = cap_2_left + t[server_pos_2][job2_pos];
+        cur_capacities[server_pos_1] = cap_1_left - t[server_pos_1][best_job_2];
+        cur_capacities[server_pos_2] = cap_2_left + t[server_pos_2][best_job_2];
     }
+    
+    return improved;
 }
 
-void reinsertion_allocated(std::vector<std::vector<int>>& current_sol, int& current_cost)
+bool reinsertion_allocated(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
     bool improved = false;
     int server_pos_1 = -1;
@@ -235,9 +239,19 @@ void reinsertion_allocated(std::vector<std::vector<int>>& current_sol, int& curr
         current_sol[server_pos_2+1].push_back(best_job);
         current_sol[server_pos_1+1].erase(current_sol[server_pos_1+1].begin()+best_job_pos);
     }
+
+    return improved;
 }
 
-void reinsertion_not_allocated(std::vector<std::vector<int>>& current_sol, int& current_cost)
+
+
+
+
+
+
+
+
+bool reinsertion_not_allocated(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
     bool improved = false;
     int server_pos = -1;
@@ -279,7 +293,64 @@ void reinsertion_not_allocated(std::vector<std::vector<int>>& current_sol, int& 
         current_sol[server_pos+1].push_back(best_job);
         current_sol[0].erase(current_sol[0].begin()+best_job_pos);
     }
+
+    
+    return improved;
 }
+
+
+
+
+
+void rvnd(std::vector<std::vector<int>> &current_sol, int& current_cost){
+    std::vector<int> neighbourhood = {1, 2, 3}; //1 is for swap, 2 for reinsertion allocated and 3 for reinsertion not allocated
+    bool empty_list = false;
+    int movement;
+    bool improved;
+    srand(time(0));
+
+    while(neighbourhood.empty() == false){
+        improved = true;
+        movement = rand()%neighbourhood.size(); //Choses neighbourhood at random
+        
+        if(neighbourhood[movement] == 1){
+
+            while(improved == true){
+        
+                improved = swap(current_sol, current_cost);
+                
+            }
+            //Once solution is no longer improving (best neighbourhood found), value  is erased from vector
+            neighbourhood.erase(neighbourhood.begin() + movement);
+
+        }else if(neighbourhood[movement] == 2){
+                
+            while (improved == true)
+            {
+                improved = reinsertion_allocated(current_sol, current_cost);
+                
+            }
+
+            neighbourhood.erase(neighbourhood.begin() + movement);
+    
+        }else if(neighbourhood[movement] == 3){
+
+            while (improved == true)
+            {
+                improved = reinsertion_not_allocated(current_sol, current_cost);
+                
+            }
+
+            neighbourhood.erase(neighbourhood.begin() + movement);
+
+        }
+
+    }
+
+}
+
+
+
 
 int main(int argc, char** argv)
 {   
@@ -295,13 +366,16 @@ int main(int argc, char** argv)
     construction(current_sol, current_cost, alpha);
     print_solution(current_sol, current_cost);
 
-    swap(current_sol, current_cost);
-    print_solution(current_sol, current_cost);
+    //swap(current_sol, current_cost);
+    //print_solution(current_sol, current_cost);
 
-    reinsertion_allocated(current_sol, current_cost);
-    print_solution(current_sol, current_cost);
+    //reinsertion_allocated(current_sol, current_cost);
+    //print_solution(current_sol, current_cost);
 
-    reinsertion_not_allocated(current_sol, current_cost);
+    //reinsertion_not_allocated(current_sol, current_cost);
+    //print_solution(current_sol, current_cost);
+
+    rvnd(current_sol, current_cost);
     print_solution(current_sol, current_cost);
 
     free(m, &b, &t, &c);
