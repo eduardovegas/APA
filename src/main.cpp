@@ -1,9 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <time.h>
 #include "data.h"
 #include "utils.h"
+#include "random.hpp"
+
+using Random = effolkronium::random_static;
 
 #define M 99999
 
@@ -91,8 +93,7 @@ void construction(std::vector<std::vector<int>>& current_sol, int& current_cost,
         int range = floor(alpha*allocation_costs.size());
         if(range != 0)
         {
-            //choosen = rand([0,range))
-            choosen = rand() % range;
+            choosen = Random::get(0, range-1);
         }
 
         int cost = allocation_costs[choosen];
@@ -179,7 +180,7 @@ bool swap(std::vector<std::vector<int>>& current_sol, int& current_cost)
         cur_capacities[server_pos_1] = cap_1_left - t[server_pos_1][best_job_2];
         cur_capacities[server_pos_2] = cap_2_left + t[server_pos_2][best_job_2];
     }
-    
+
     return improved;
 }
 
@@ -333,12 +334,11 @@ void rvnd(std::vector<std::vector<int>> &current_sol, int& current_cost){
 }
 
 int main(int argc, char** argv)
-{   
+{
     read_data(argc, argv, &n, &m, &p, &b, &t, &c, &cur_capacities);
     print_data(n, m, p, b, t, c);
 
     float alpha = strtof(argv[2], NULL);
-    srand(time(NULL));
 
     std::vector<std::vector<int>> current_sol(m+1, std::vector<int>());
     int current_cost = 0;
