@@ -6,7 +6,7 @@ Instruções:
 
     make rebuild
 
-    ./apa <instances/instance.txt> <alpha>
+    ./apa <instances/instance.txt> <optimal value> <alpha>
 
 Movimentos de vizinhança:
 

@@ -2,7 +2,7 @@
 
 void read_data(int argc, char** argv, int* n, int* m, int* p, int** b, int*** t, int*** c, int** cur_capacities)
 {
-    if (argc != 3)
+    if (argc != 4)
     {
         printf("Incorrect number of params\n");
         exit(1);

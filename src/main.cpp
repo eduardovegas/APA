@@ -17,6 +17,7 @@ int** t;
 int** c;
 
 int* cur_capacities;
+int optimal;
 
 void print_solution(std::vector<std::vector<int>>& current_sol, int& current_cost)
 {
@@ -394,7 +395,8 @@ int main(int argc, char** argv)
     read_data(argc, argv, &n, &m, &p, &b, &t, &c, &cur_capacities);
     print_data(n, m, p, b, t, c);
 
-    float alpha = strtof(argv[2], NULL);
+    int optimal = atoi(argv[2]);
+    float alpha = strtof(argv[3], NULL);
 
     std::vector<std::vector<int>> current_sol(m+1, std::vector<int>());
     int current_cost = 0;
