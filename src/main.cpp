@@ -549,7 +549,7 @@ int main(int argc, char** argv)
         custos_somados += best_cost;
     }
 
-    int average_custo = custos_somados/10;
+    float average_custo = ((float)custos_somados)/10.0;
     float average_gap = gap(average_custo, optimal);
     std::cout << "Average Cost: " << average_custo << std::endl;
     std::cout << "Average Gap: " << average_gap << std::endl;
