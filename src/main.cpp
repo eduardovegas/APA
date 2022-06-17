@@ -545,7 +545,7 @@ int main(int argc, char** argv)
     std::cout << "Time: " << time.count() << "s" << std::endl;
     std::cout << "Gap: " << gap(best_cost, optimal) << std::endl;
 
-    free(m, &b, &t, &c, &cur_capacities);
+    free(m, &b, &t, &c);
 
     return 0;
 }

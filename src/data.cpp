@@ -117,10 +117,9 @@ void print_data(int n, int m, int p, int* b, int **t, int **c)
     return;
 }
 
-void free(int m, int** b, int*** t, int*** c, int** cur_capacities)
+void free(int m, int** b, int*** t, int*** c)
 {
     free(*b);
-    free(*cur_capacities);
 
     for(int i = 0; i < m; i++)
     {
@@ -133,7 +132,6 @@ void free(int m, int** b, int*** t, int*** c, int** cur_capacities)
     *b = NULL;
     *t = NULL;
     *c = NULL;
-    *cur_capacities = NULL;
 
     return;
 }
