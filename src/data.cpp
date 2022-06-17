@@ -1,8 +1,8 @@
 #include "data.h"
 
-void read_data(int argc, char** argv, int* n, int* m, int* p, int** b, int*** t, int*** c, int** cur_capacities)
+void read_data(int argc, char** argv, int* n, int* m, int* p, int** b, int*** t, int*** c)
 {
-    if (argc != 5)
+    if(argc != 4)
     {
         printf("Incorrect number of params\n");
         exit(1);
@@ -37,7 +37,6 @@ void read_data(int argc, char** argv, int* n, int* m, int* p, int** b, int*** t,
     }
 
     *b = (int*) malloc((*m) * sizeof(int));
-    *cur_capacities = (int*) malloc((*m) * sizeof(int));
     for(int i = 0; i < *m; i++)
     {
         if(fscanf(f, "%d", (*b)+i) != 1)
@@ -118,10 +117,9 @@ void print_data(int n, int m, int p, int* b, int **t, int **c)
     return;
 }
 
-void free(int m, int** b, int*** t, int*** c, int** cur_capacities)
+void free(int m, int** b, int*** t, int*** c)
 {
     free(*b);
-    free(*cur_capacities);
 
     for(int i = 0; i < m; i++)
     {
@@ -134,7 +132,6 @@ void free(int m, int** b, int*** t, int*** c, int** cur_capacities)
     *b = NULL;
     *t = NULL;
     *c = NULL;
-    *cur_capacities = NULL;
 
     return;
 }

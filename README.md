@@ -6,19 +6,26 @@ Instruções:
 
     make rebuild
 
-    ./apa <instances/instance.txt> <optimal value> <alpha> <IGrasp>
+    ./apa <instances/instance.txt> <optimal value> <metaheuristic>
+
+OBS: O parâmetro inteiro "metaheuristic" seleciona qual metaheurística deve ser utilizada:
+
+- 1: GRASP
+- 2: ILS
+- 3: GILS-RVND
 
 Movimentos de vizinhança:
 
 - [x] Swap
-- [X] Reinsertion-Allocated
-- [X] Reinsertion-Not-Allocated
+- [x] Reinsertion-Allocated
+- [x] Reinsertion-Not-Allocated
 
 Algoritmos de busca local:
 
-- [X] RVND
+- [x] RVND
 
 Metaheurísticas:
 
-- [ ] GRASP
-- [ ] ILS
+- [x] GRASP
+- [x] ILS
+- [x] GILS-RVND
