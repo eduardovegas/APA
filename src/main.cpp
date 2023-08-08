@@ -523,27 +523,36 @@ int main(int argc, char** argv)
     int IGrasp = 16;
     int IIls = 16;
 
-    int best_cost = M;
-    std::vector<int> best_capacities;
-    std::vector<std::vector<int>> best_sol;
-    std::chrono::duration<double> time;
+    int custos_somados = 0;
 
-    switch(metaheuristic)
+    for(int i = 0; i < 10; i++)
     {
-        case 1:
-            time = grasp(best_sol, best_cost, best_capacities, alpha, IGrasp);
-            break;
-        case 2:
-            time = ils(best_sol, best_cost, best_capacities, alpha, IIls);
-            break;
-        case 3:
-            time = gils_rvnd(best_sol, best_cost, best_capacities, alpha, IGrasp, IIls);
-            break;
+        int best_cost = M;
+        std::vector<int> best_capacities;
+        std::vector<std::vector<int>> best_sol;
+        std::chrono::duration<double> time;
+
+        switch(metaheuristic)
+        {
+            case 1:
+                time = grasp(best_sol, best_cost, best_capacities, alpha, IGrasp);
+                break;
+            case 2:
+                time = ils(best_sol, best_cost, best_capacities, alpha, IIls);
+                break;
+            case 3:
+                time = gils_rvnd(best_sol, best_cost, best_capacities, alpha, IGrasp, IIls);
+                break;
+        }
+
+        std::cout << "Time: " << time.count() << "s" << std::endl;
+        custos_somados += best_cost;
     }
 
-    print_solution(best_sol, best_cost, best_capacities);
-    std::cout << "Time: " << time.count() << "s" << std::endl;
-    std::cout << "Gap: " << gap(best_cost, optimal) << std::endl;
+    float average_custo = ((float)custos_somados)/10.0;
+    float average_gap = gap(average_custo, optimal);
+    std::cout << "Average Cost: " << average_custo << std::endl;
+    std::cout << "Average Gap: " << average_gap << std::endl;
 
     free(m, &b, &t, &c);
 
